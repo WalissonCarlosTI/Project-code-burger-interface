@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
+import { useUser } from "../../hooks/UserContext";
 import LoginImg from "../../assets/login-image.svg";
 import Logo from "../../assets/logo.svg"
 import Button from "../../components/Button";
@@ -12,6 +13,9 @@ import api from "../../services/api";
 import { Container, LoginImage, ContainerItens, Label, Input, SignInLink, ErrorMessage } from "./styles"
 
 function Login() {
+    const { putUserData } = useUser()
+
+
     const schema = Yup.object().shape({
         email: Yup.string().email("Digite um e-mail valido").required("O e-mail é obrigatório"),
         password: Yup.string().required("A senha é obrigatória").min(6, "Senha no mínimo 6 dígitos"),
@@ -23,23 +27,28 @@ function Login() {
     });
 
 
-    const onSubmit = async clientData => {
-        const response = await toast.promise(
-            api.post("/session", {
-                email: clientData.email,
-                password: clientData.password
-            }),
+    const onSubmit = async (clientData) => {
+        try {
+            const { data } = await toast.promise(
+                api.post("/session", {
+                    email: clientData.email,
+                    password: clientData.password
+                }),
 
-            {
-                pending: "Verificando seus dados 🔄",
-                success: "Seja bem-vindo(a)! ✅",
-                error: "Verifique seu email e senha 🤯"
+                {
+                    pending: "Verificando seus dados 🔄",
+                    success: "Seja bem-vindo(a)! ✅",
+                    error: "Verifique seu email e senha 🤯"
 
-            }
+                }
 
-        )
+            );
 
-        console.log(response)
+            putUserData(data)
+            /*console.log()*/
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
