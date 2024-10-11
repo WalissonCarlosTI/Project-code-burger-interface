@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -29,7 +30,7 @@ function Register() {
 
     const onSubmit = async clientData => {
         try {
-           const {status} = await api.post("users", {
+            const { status } = await api.post("users", {
                 name: clientData.name,
                 email: clientData.email,
                 password: clientData.password
@@ -80,7 +81,7 @@ function Register() {
                 </form>
 
                 <SignInLink>
-                    Já possui conta? <i>Sign Up</i>
+                    Já possui conta? {" "} <Link style={{ color: "white" }} to="/login">Sign Up</Link>
                 </SignInLink>
             </ContainerItens>
         </Container>
